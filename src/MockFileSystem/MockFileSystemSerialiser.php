@@ -13,13 +13,12 @@ class MockFileSystemSerialiser implements MockFileSystemSerialiserInterface
         if ($handle) {
             $level = 0;
             $previousLevel = 0;
-            $i = 0;
             $currentPath = '';
             
             while (($line = fgets($handle)) !== false) {
                 $previousLevel = $level;
                 $level = $this->countTabs($line);
-                if ($i == 0) {
+                if (empty($currentPath)) {
                     $currentPath = trim($line);
                 } else if ($this->lineIsFile($line)) {
                     $nodes[] = new MockFile($currentPath . DIRECTORY_SEPARATOR . trim($line));
@@ -31,8 +30,6 @@ class MockFileSystemSerialiser implements MockFileSystemSerialiserInterface
                     }
                     $nodes[] = new MockDirectory($currentPath);
                 }
-                $i++;
-                
             }
             fclose($handle);
         }
